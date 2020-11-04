@@ -96,7 +96,6 @@ function App() {
         name="delete"
         title="Вы уверенны?"
         btnText="Да"
-        // isOpen = {}  
         onClose={closeAllPopups}
       >
         <>

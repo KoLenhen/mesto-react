@@ -4,11 +4,11 @@ function Card(props) {
 
     function handleImgClick() {
         props.onImgClick(props.card);
-      }  
-      
+    }
+
     return (
         <div className="location">
-            <img onClick = {handleImgClick} src={String(props.card.link)} alt={`Фото ${props.card.name}`} className="location__image" />
+            <img onClick={handleImgClick} src={String(props.card.link)} alt={`Фото ${props.card.name}`} className="location__image" />
             <button type="button" className="location__trash"></button>
             <div className="location__info">
                 <h2 className="location__name">

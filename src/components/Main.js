@@ -44,11 +44,11 @@ function Main(props) {
             </button>
       </section>
       <section className="locations">
-        {cards.map(card => 
+        {cards.map(card =>
           <Card
-            key = {card._id}
-            card = {card}
-            onImgClick = {props.onImgClick}
+            key={card._id}
+            card={card}
+            onImgClick={props.onImgClick}
           />
         )}
       </section>
