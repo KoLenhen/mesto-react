@@ -19,7 +19,7 @@ function Main(props) {
         setCards(cardsData);
       })
       .catch((error) => { alert(error) });
-  });
+  }, []);
 
   return (
     <main className="content">
