@@ -16,3 +16,4 @@
 9. JS
 10. OOP
 
+* [Ссылка на веб-страницу проекта](https://kolenhen.github.io/mesto-react)
