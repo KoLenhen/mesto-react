@@ -32,52 +32,62 @@ class Api {
     }
   
     addCard(data) {
-      return fetch(this._url + 'cards', {
+      return fetch(`${this._url}cards`, {
         method: 'POST',
         headers: this._headers,
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          name: data.name,
+          link: data.link
+        }),
       })
       .then(this._responseHandler);
     }
   
-    delCard(data) {
-      return fetch(`${this._url}cards/${data._id}`, {
+    delCard(id) {
+      return fetch(`${this._url}cards/${id}`, {
         method: 'DELETE',
         headers: this._headers,
       })
       .then((this._responseHandler));
     }
   
-    addLikes(data) {
-      return fetch(this._url + 'cards/likes/' + data._id, {
+    addLike(id) {
+      return fetch(`${this._url}cards/likes/${id}`, {
         method: 'PUT',
         headers: this._headers,
       })
       .then(this._responseHandler);
     }
   
-    delLike(data) {
-      return fetch(this._url + 'cards/likes/' + data._id, {
+    delLike(id) {
+      return fetch(`${this._url}cards/likes/${id}`, {
         method: 'DELETE',
         headers: this._headers,
       })
       .then(this._responseHandler);
     }
   
+    changeLikeCardStatus(id, isLiked) {
+      if (!isLiked) {
+        return this.delLike(id);
+      } else {
+        return this.addLike(id);
+      }
+    }
+
     setProfile(profile) {
-      return fetch(this._url + 'users/me', {
+      return fetch(`${this._url}users/me`, {
         method: 'PATCH',
         headers: this._headers,
         body: JSON.stringify({
           name: profile.name,
           about: profile.about,
         }),
-      })
-      .then(this._responseHandler);
+      }).then(this._responseHandler);
     }
   
     setProfileAvatar(obj) {
-      return fetch(this._url + 'users/me/avatar', {
+      return fetch(`${this._url}users/me/avatar`, {
         method: 'PATCH',
         headers: this._headers,
         body: JSON.stringify({
