@@ -19,26 +19,37 @@ function Card(props) {
         props.onImgClick(props.card);
     }
 
-    function handleLikeClick () {
+    function handleLikeClick() {
         props.onCardLike(props.card);
     }
 
-    
-    function handleDeleteClick () {
+
+    function handleDeleteClick() {
         props.onCardDelete(props.card);
     }
 
     return (
         <div className="location">
-            <img onClick={handleImgClick} src={String(props.card.link)} alt={`Фото ${props.card.name}`} className="location__image" />
-            {/* "location__trash" */}
-            <button type="button" onClick={handleDeleteClick} className={cardDeleteButtonClassName}></button>
+            <img
+                onClick={handleImgClick}            
+                src={String(props.card.link)}
+                alt={`Фото ${props.card.name}`}
+                className="location__image" />
+            <button
+                type="button"
+                onClick={handleDeleteClick}
+                className={cardDeleteButtonClassName}>
+            </button>
             <div className="location__info">
                 <h2 className="location__name">
                     {props.card.name}
                 </h2>
                 <div className="location__wrap">
-                    <button type="button" onClick={handleLikeClick} className={cardLikeButtonClassName}></button>
+                    <button
+                        type="button"
+                        onClick={handleLikeClick}
+                        className={cardLikeButtonClassName}>
+                    </button>
                     <span className="location__likes">{props.card.likes.length}</span>
                 </div>
             </div>
@@ -47,3 +58,5 @@ function Card(props) {
 }
 
 export default Card;
+
+//https://images.unsplash.com/photo-1602112711460-9431b0cb6d25?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1868&q=80

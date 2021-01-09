@@ -29,7 +29,9 @@ function Main(props) {
             </button>
       </section>
       <section className="locations">
-        {props.cards.map(card =>
+        {props.isCardsLoading ? 
+          <p className="locations__loading">Загрузка...</p> 
+          :props.cards.map(card =>
           <Card
             key={card._id}
             card={card}

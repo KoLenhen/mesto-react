@@ -19,6 +19,7 @@
 @import url(./blocks/profile/__add/profile__add.css);
 
 @import url(./blocks/locations/locations.css);
+@import url(./blocks/locations/__loading/locations__loading.css);
 
 @import url(./blocks/location/location.css);
 @import url(./blocks/location/__image/location__image.css);

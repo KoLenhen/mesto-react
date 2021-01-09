@@ -1,43 +1,56 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PopupWithForm from './PopupWithForm';
+import { useCustomFormAndValidation } from '../hooks/useCustomForm';
 
 function AddPlacePopup(props) {
+    const { values, handleChange, errors, isValid, resetForm } = useCustomFormAndValidation();
 
-    const [name, setName] = React.useState('');
-    const [link, setLink] = React.useState('');
-
-    function handleChangeName(e) {
-        setName(e.target.value);
-    }
-
-    function handleChangeLink(e) {
-        setLink(e.target.value);
-    }
+    useEffect(() => {
+        resetForm()
+    }, [props.isOpen, resetForm])
 
     function handleSubmit(e) {
-        e.preventDefault(e);
-        props.onAddPlace({
-            name: name,
-            link: link,
-        })
+        e.preventDefault();
+        props.onAddPlace(values);
     }
 
     return (
         <PopupWithForm
             name="add"
             title="Новое место"
-            btnText="Создать"
+            btnText={props.isPlaceAdding ? "Создается..." : "Создать"}
             isOpen={props.isOpen}
             onClose={props.onClose}
             onSubmit={handleSubmit}
+            isDisabled={!isValid}
+            onClick = {props.onClick}
         >
             <>
-                <input type="text" id="location-name-input" name="locationName" placeholder="Название" required minLength="1"
-                    maxLength="30" className="popup__text popup__text_type_location-name" value={name} onChange={handleChangeName} />
-                <span id="location-name-input-error" className="popup__text-error">Проверьте правильность ввода</span>
-                <input type="url" id="location-ref-input" name="locationRef" placeholder="Ссылка на картинку" required
-                    className="popup__text popup__text_type_ref" value={link} onChange={handleChangeLink} />
-                <span id="location-ref-input-error" className="popup__text-error">Проверьте правильность ввода</span>
+                <input
+                    type="text"
+                    id="location-name-input"
+                    name="name"
+                    placeholder="Название"
+                    required
+                    minLength="1"
+                    maxLength="30"
+                    className="popup__text popup__text_type_location-name"
+                    value={values.name || ''}
+                    onChange={handleChange}                    
+                />
+                <span id="location-name-input-error"
+                    className="popup__text-error">{errors.name || ''}</span>
+                <input
+                    type="url"
+                    id="location-ref-input"
+                    name="link"
+                    placeholder="Ссылка на картинку"
+                    required
+                    className="popup__text popup__text_type_ref"
+                    value={values.link || ''}
+                    onChange={handleChange}
+                />
+                <span id="location-ref-input-error" className="popup__text-error">{errors.link || ''}</span>
             </>
         </PopupWithForm>
     )

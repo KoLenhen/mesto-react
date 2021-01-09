@@ -20,13 +20,13 @@
     box-sizing: border-box;
 }
 
-@media screen and (max-width: 1240px) {
+@media screen and (max-width: 1280px) {
     .popup__container {
         margin: calc(70vh - 345px) auto 0;
    }
  }
 
- @media screen and (max-width: 768px) {
+ @media screen and (max-width: 1080px) {
     .popup__container {
         margin: calc(90vh - 345px) auto 0;
    }
