@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import api from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { Route, Redirect, Switch, useHistory } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -9,9 +10,14 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import DeleteCardPopup from './DeleteCardPopup';
+import InfoTooltip from './InfoTooltip';
+import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
+import { checkToken } from '../utils/auth';
 
 function App() {
-
+  const history = useHistory();
   const [isEditProfilePopupOpen, setEditProfilePopupState] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupState] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupState] = useState(false);
@@ -21,11 +27,16 @@ function App() {
   const [isUserSaving, setIsUserSaving] = useState(false);
   const [isCardDeleting, setIsCardDeleting] = useState(false);
   const [isPlaceAdding, setIsPlaceAdding] = useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [cardToDel, setCardToDel] = useState({});
+  const [tooltipMessage, setTooltipMessage] = useState('');
+  const [tooltipType, setTooltipType] = useState('');
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
 
   useEffect(() => {
     setIsCardsLoading(true);
@@ -59,8 +70,8 @@ function App() {
       document.removeEventListener('keydown', handleEscClose);
     }
   }, []);
-  
-// popup closing by overlay
+
+  // popup closing by overlay
   function handleClick(event) {
     if (event.target === event.currentTarget) {
       closeAllPopups();
@@ -83,12 +94,22 @@ function App() {
     setSelectedCard(card);
   }
 
+  function handleCardDeleteReq(card) {
+    setCardToDel(card);
+    setIsDelCardPopupOpen(!isDelCardPopupOpen);
+  }
+
+  function handleTooltipOpen() {
+    setIsInfoTooltipPopupOpen(!isInfoTooltipPopupOpen);
+  }
+
   function closeAllPopups() {
     setEditProfilePopupState(false);
     setAddPlacePopupState(false);
     setEditAvatarPopupState(false);
     setCardSPopupState(false);
     setIsDelCardPopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
     setSelectedCard({});
   }
 
@@ -139,11 +160,6 @@ function App() {
       });
   }
 
-  function handleCardDeleteReq(card) {
-    setCardToDel(card);
-    setIsDelCardPopupOpen(!isDelCardPopupOpen);
-  }
-
   function handleCardDelete(event) {
     event.preventDefault();
     setIsCardDeleting(true);
@@ -159,19 +175,81 @@ function App() {
       });
   }
 
+  function handleLogin() {
+    console.log(loggedIn + ' handleLogin str 178');
+    setLoggedIn(true);
+    console.log(loggedIn + ' str 180');
+  }
+
+  function handleLogOut() {
+    setLoggedIn(false);
+    console.log(loggedIn);
+    localStorage.removeItem('jwt');
+    history.push('/sign-in');
+  }
+  const handleTokenCheck = useCallback(() => {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      if (jwt) {
+        checkToken(jwt)
+          .then((res) => {
+            if (res) {
+              setCurrentUserEmail(res.data.email);
+              setLoggedIn(true);
+              history.push('/');
+            }
+          })
+      }
+    }
+  },
+    [history, setLoggedIn, setCurrentUserEmail]
+  )
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      handleTokenCheck();
+    }
+  }, [loggedIn]);
+
   return (
     <CurrentUserContext.Provider value={currentUser} >
-      <Header />
-      <Main
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onEditAvatar={handleEditAvatarClick}
-        onImgClick={handleCardClick}
-        isCardsLoading={isCardsLoading}
-        onCardLike={handleCardLike}
-        onCardDelete={handleCardDeleteReq}
-        cards={cards}
+      <Header
+        loggedIn={loggedIn}
+        logOut={handleLogOut}
+        userEmail={currentUserEmail}
       />
+      <Switch>
+        <Route path="/sign-up">
+          <Register
+            onTooltipOpen={handleTooltipOpen}
+            message={setTooltipMessage}
+            type={setTooltipType}
+          />
+        </Route>
+        <Route path="/sign-in">
+          <Login
+            onTooltipOpen={handleTooltipOpen}
+            message={setTooltipMessage}
+            type={setTooltipType}
+            handleLogin={handleLogin}
+          />
+        </Route>
+        <ProtectedRoute
+          path="/"
+          component={Main}
+          loggedIn={loggedIn}
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onEditAvatar={handleEditAvatarClick}
+          onImgClick={handleCardClick}
+          isCardsLoading={isCardsLoading}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDeleteReq}
+          cards={cards}
+        />
+
+      </Switch>
       <Footer />
       {
         isEditProfilePopupOpen && <EditProfilePopup
@@ -210,11 +288,20 @@ function App() {
       }
       {
         isCardPopupOpen && <ImagePopup
-          name="edit"
           card={selectedCard}
           isOpen={isCardPopupOpen}
           onClose={closeAllPopups}
           onClick={handleClick}
+        />
+      }
+      {
+        isInfoTooltipPopupOpen &&
+        <InfoTooltip
+          type={tooltipType}
+          isOpen={isInfoTooltipPopupOpen}
+          onClose={closeAllPopups}
+          onClick={handleClick}
+          message={tooltipMessage}
         />
       }
     </CurrentUserContext.Provider>

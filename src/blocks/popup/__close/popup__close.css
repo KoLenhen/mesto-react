@@ -33,9 +33,10 @@
 
 @media screen and (max-width: 450px) {
     .popup__close {
-        top: 5px;
-        right: 5px;
-        font-size: 24px;
-        color: #000;
+        top: -50px;
+        right: 0;
+        left: 0;
+        margin: auto;
+        color: #ffffff;
     }
  }
