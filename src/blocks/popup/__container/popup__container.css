@@ -1,5 +1,5 @@
 .popup__container {
-    margin: calc(50vh - 345px) auto 0;
+    margin: calc(100vh - 73vh) auto 0;
     max-width: 430px;   
     -webkit-display: flex;
     -moz-display: flex;
@@ -19,18 +19,6 @@
     padding: 34px 36px 36px;
     box-sizing: border-box;
 }
-
-@media screen and (max-width: 1280px) {
-    .popup__container {
-        margin: calc(70vh - 345px) auto 0;
-   }
- }
-
- @media screen and (max-width: 1080px) {
-    .popup__container {
-        margin: calc(90vh - 345px) auto 0;
-   }
- }
 
 @media screen and (max-width: 450px) {
    .popup__container {
